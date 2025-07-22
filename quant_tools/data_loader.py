@@ -26,14 +26,14 @@ def get_data(tickers,start = '2015-01-01',end = None, download = False):
     for t in tickers:
         path = cache_path(t,start,end) 
         if os.path.exists(path) and not download:
-            df = pd.read_parquet(path)
+            df = pd.read_parquet(path,engine='pyarrow')
         
         else:
             df = yf.download(t,start = start,end = end,auto_adjust= False, progress=False)
             if df.empty:
                 raise ValueError(f'No data available')
             
-            df.to_parquet(path)
+            df.to_parquet(path,engine='pyarrow')
         df['Ticker'] = t
         dataframes.append(df)
         
