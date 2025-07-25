@@ -1,4 +1,4 @@
-from simulations import mc_european_call
+from quant_tools.simulations import mc_european_call
 
 def greeks_estimate(method, bump = 1e-2,**kwargs):
     if method == 'vega':
