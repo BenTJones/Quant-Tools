@@ -11,8 +11,4 @@ def mc_european_call(s0,K,r,sigma,T,n_steps = 252,n_paths = 10000):
     adjusted_payoff = np.exp(-r*T)* expected_payoff
     return float(adjusted_payoff)
 
-price_estimate = mc_european_call(
-    s0=100, K=100, r=0.01, sigma=0.2, T=1.0,
-    n_steps=252, n_paths=100_000
-)
-print(f"Estimated call price: {price_estimate:.4f}")
+    

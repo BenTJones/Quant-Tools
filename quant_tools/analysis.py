@@ -67,11 +67,11 @@ def sortino_ratio(returns,mar=0.0,periods_per_year=252):
     sortino = expected_excess / dd
     return sortino if dd != 0 else np.nan
 
-def calmar_ratio(returns,prices = None,periods_per_year=252):
-    if prices is None:
+def calmar_ratio(returns,equity_series = None,periods_per_year=252):
+    if equity_series is None:
         equity = (1+ returns).cumprod() #Finds equity from £1 investment
     else:
-        equity = prices
+        equity = equity_series
     mdd = calculate_drawdown(equity)
     if mdd == 0:
         return np.nan
