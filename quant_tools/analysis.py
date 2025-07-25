@@ -11,7 +11,7 @@ def calculate_log_returns(price_series):
 #Calculates day to day returns
 
 def calculate_moving_avg(price_series,window = 20):
-    averages_series = price_series.ewm(span = window, adjust = False).mean()
+    averages_series= price_series.ewm(span = window, adjust = False).mean()
     #Implements Exponential Weighted Average to find trends
     return averages_series
  

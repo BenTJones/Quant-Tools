@@ -10,5 +10,3 @@ def mc_european_call(s0,K,r,sigma,T,n_steps = 252,n_paths = 10000):
     expected_payoff = payoffs.mean()
     adjusted_payoff = np.exp(-r*T)* expected_payoff
     return float(adjusted_payoff)
-
-    
