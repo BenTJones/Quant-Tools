@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from simulations import gbm
+from quant_tools.simulations import gbm
 
 def mc_european_call(s0,K,r,sigma,T,n_steps = 252,n_paths = 10000):
     dt = T/n_steps
