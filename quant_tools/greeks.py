@@ -1,4 +1,4 @@
-from quant_tools.simulations import mc_european_call
+from quant_tools.pricing import mc_european_call
 
 def greeks_estimate(method, bump = 1e-2,**kwargs):
     if method == 'vega':
@@ -24,5 +24,6 @@ def greeks_estimate(method, bump = 1e-2,**kwargs):
     pos_mc= mc_european_call(**pos_kwargs)
     neg_mc = mc_european_call(**neg_kwargs)
     greeks = (pos_mc - neg_mc) / (2 * h)
-    return greeks
+    return -greeks if method == 'theta' else greeks
+
 

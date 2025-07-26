@@ -7,37 +7,34 @@ import yfinance as yf
 
 cache_directory = '.cache_data' #Cache creation to avoid constantly pulling from API
 
-def cache_path(ticker,start,end):
-    cache_file_name = f'{ticker}_{start}_{end}.parquet'.replace(':','-')
-    return os.path.join(cache_directory,cache_file_name)
-
-def get_data(tickers,start = '2015-01-01',end = None, download = False):
+def get_data(tickers, start='2015-01-01', end=None):
     if end is None:
         end = datetime.today().strftime('%Y-%m-%d')
-        
-    if isinstance(tickers,str):
-        tickers = [tickers] #Converts any single ticker into a list so behaves as desired.
-        
+    
+    # Create a single, unique filename for the entire request
+    tickers_str = "_".join(sorted(tickers))
+    cache_file_name = f'{tickers_str}_{start}_{end}.parquet'
+    path = os.path.join(cache_directory, cache_file_name)
+    
     if not os.path.exists(cache_directory):
         os.makedirs(cache_directory)
         
-    dataframes = [] #list to store the dataframes for each ticker
-    
-    for t in tickers:
-        path = cache_path(t,start,end) 
-        if os.path.exists(path) and not download:
-            df = pd.read_parquet(path,engine='pyarrow')
+    # Check if the cached file exists
+    if os.path.exists(path):
+        print("Loading data from cache...")
+        df = pd.read_parquet(path)
+    else:
+        print("Downloading data...")
+        # Download all tickers at once
+        df_raw = yf.download(tickers, start=start, end=end, auto_adjust=False, progress=False)
         
-        else:
-            df = yf.download(t,start = start,end = end,auto_adjust= False, progress=False)
-            if df.empty:
-                raise ValueError(f'No data available')
-            
-            df.to_parquet(path,engine='pyarrow')
-        df['Ticker'] = t
-        dataframes.append(df)
+        # Reshape the data by stacking the 'Ticker' level from columns to rows
+        df = df_raw.stack()
         
-    results = pd.concat(dataframes)
-    results = results.reset_index().set_index(['Date','Ticker']).sort_index()
+        # Save the clean, reshaped data to the cache
+        df.to_parquet(path)
+        
+    # Ensure the index names are correct
+    df.index.names = ['Date', 'Ticker']
     
-    return results
+    return df

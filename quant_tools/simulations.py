@@ -5,7 +5,9 @@ def sim_rand_walk(s0,sigma,n_steps,dt = 1/252):
     #Start with random walk with no drift
     shocks = np.random.randn(n_steps) * sigma * np.sqrt(dt)
     steps = s0 + shocks.cumsum()
-    path = np.insert(steps,0,s0)
+    path_array = np.insert(steps,0,s0)
+    idx = pd.RangeIndex(start=0,stop = n_steps+1,step=dt)
+    path = pd.Series(path_array,index=idx)
     return path
 
 def gbm(s0,mu,sigma,n_steps,dt =1/252,n_paths = 1):
